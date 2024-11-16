@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import ApplicationForm
 from .models import Form
 from django.contrib import messages
+from django.core.mail import EmailMessage
 
 
 def home(request):
@@ -14,8 +15,24 @@ def home(request):
             date = form.cleaned_data["date"]
             occupation = form.cleaned_data["occupation"]
 
+            message_body = f"""
+            Thank you for submitting your application.
+            These are your details:
+            Name = {first_name} {last_name}
+            Email = {email}
+            Date available = {date}
+            Occupation = {occupation}
+
+            Thankyou!
+            You will receive feedback soon.                 
+            """
+
+            email = EmailMessage("Application Submitted Successfully", message_body, to=[email])
+
+
             Form.objects.create(first_name=first_name, last_name=last_name,
                                 email=email, date=date, occupation=occupation)
 
             messages.success(request, "Application submitted successfully")
+            email.send()
     return render(request,"home.html")
