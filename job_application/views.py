@@ -27,12 +27,12 @@ def home(request):
             You will receive feedback soon.                 
             """
 
-            email = EmailMessage("Application Submitted Successfully", message_body, to=[email])
-
+            email_message = EmailMessage("Application Submitted Successfully", message_body, to=[email])
+            email_message.send()
 
             Form.objects.create(first_name=first_name, last_name=last_name,
                                 email=email, date=date, occupation=occupation)
 
             messages.success(request, "Application submitted successfully")
-            email.send()
+
     return render(request,"home.html")
